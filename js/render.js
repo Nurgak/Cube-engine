@@ -239,7 +239,7 @@ Renderer.prototype.render = function()
 	
 	// empty renderable node array from last render and low resolution chunks
 	this.renderNodes = [];
-	this.lowResChunks = [];
+	//this.lowResChunks = [];
 	
 	// relative chunk position
 	var rcp, distance;
@@ -257,7 +257,7 @@ Renderer.prototype.render = function()
 		}
 		
 		// chunk too far
-		distance = rcp.x*rcp.x+rcp.z*rcp.z;
+		/*distance = rcp.x*rcp.x+rcp.z*rcp.z;
 		if(distance > this.chunkRenderDist)
 		{
 			this.lowResChunks.push({
@@ -265,25 +265,26 @@ Renderer.prototype.render = function()
 				distance: distance
 			});
 			continue;
-		}
+		}*/
 		
 		// get renderable nodes from each chunk inside this.renderNodes
 		this.getChunkNodes(this.world.chunks[i]);
 	}
 	
+	// first fog layer from furthest nodes
+	var fogDistance = 50;
+	
 	// render low resolution chunks according to their distance to player
-	this.lowResChunks.sort(function(a, b)
+	/*this.lowResChunks.sort(function(a, b)
 	{
 		return b.distance-a.distance;
 	});
 	
-	// first fog layer from furthest nodes
-	var fogDistance = 50;
 	for(var i in this.lowResChunks)
 	{
 		this.renderLowResChunk(this.lowResChunks[i].chunk);
 		fogDistance = this.fogLayer(fogDistance, this.lowResChunks[i].distance);
-	}
+	}*/
 	
 	// render nodes according to their distance to player
 	this.renderNodes.sort(function(a, b)
@@ -369,8 +370,8 @@ Renderer.prototype.fogLayer = function(fogDistance, currentDistance)
 		this.context.fillStyle = "#eeeeee";
 		this.context.beginPath();
 		this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-		this.context.fill();
 		this.context.closePath();
+		this.context.fill();
 		this.context.globalAlpha = 1;
 		
 		// next fog layer at
@@ -522,6 +523,7 @@ Renderer.prototype.drawRect = function(p)
 		// project 3d point to 2d screen (http://en.wikipedia.org/wiki/3D_projection)
 		zz = this.focalLength/zz;
 		
+		// save relative point
 		this.rp[p[i]] = {x: xx*zz, y: -yy*zz};
 		
 		// save processed vertex
@@ -568,42 +570,58 @@ Renderer.prototype.drawRect = function(p)
 }
 
 Renderer.prototype.drawMonochrome = function(p)
-{
-	this.context.strokeStyle = "#000000";
-	this.context.lineWidth = 1;
-	this.context.fillStyle = this.workingNode.type.color;
-	this.context.beginPath();
-	
-	if(this.workingNode.type.transparent)
-	{
-		this.context.globalAlpha = 0.5;
-	}
+{	
+	var points = [];
 	
 	if(this.rp[p[0]])
 	{
-		this.context.lineTo(this.rp[p[0]].x+this.w2, this.rp[p[0]].y+this.h2);
+		points.push(this.rp[p[0]]);
 	}
 	if(this.rp[p[1]])
 	{
-		this.context.lineTo(this.rp[p[1]].x+this.w2, this.rp[p[1]].y+this.h2);
+		points.push(this.rp[p[1]]);
 	}
 	if(this.rp[p[2]])
 	{
-		this.context.lineTo(this.rp[p[2]].x+this.w2, this.rp[p[2]].y+this.h2);
+		points.push(this.rp[p[2]]);
 	}
 	if(this.rp[p[3]])
 	{
-		this.context.lineTo(this.rp[p[3]].x+this.w2, this.rp[p[3]].y+this.h2);
-	}
-	if(this.rp[p[0]])
-	{
-		this.context.lineTo(this.rp[p[0]].x+this.w2, this.rp[p[0]].y+this.h2);
+		points.push(this.rp[p[3]]);
 	}
 	
-	this.context.closePath();
-	this.context.fill();
-	this.context.stroke();
-	this.context.globalAlpha = 1;
+	if(points.length > 1)
+	{
+		// reset drawing settings
+		this.context.strokeStyle = "#000000";
+		this.context.lineWidth = 1;
+		this.context.fillStyle = this.workingNode.type.color;
+		
+		// set transparency
+		if(this.workingNode.type.transparent)
+		{
+			this.context.globalAlpha = 0.5;
+		}
+		
+		// start drawing polygon
+		this.context.beginPath();
+		
+		// move to first point
+		this.context.moveTo(points[0].x+this.w2, points[0].y+this.h2);
+		for(var i = 1; i < points.length; i++)
+		{
+			this.context.lineTo(points[i].x+this.w2, points[i].y+this.h2);
+		}
+		// line back to first point (not needed)
+		//this.context.lineTo(points[0].x+this.w2, points[0].y+this.h2);
+		
+		this.context.closePath();
+		
+		// fill doesn't work properly in Chrome 20.0.1132.57
+		this.context.fill();
+		this.context.stroke();
+		this.context.globalAlpha = 1;
+	}
 }
 
 Renderer.prototype.drawTextured = function(p)
