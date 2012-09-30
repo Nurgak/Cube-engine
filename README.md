@@ -35,6 +35,6 @@ The way Javascript handles floating point numbers makes it difficult to have exa
 
 Having no 3D acceleration the rendering speed relies on the computer's speed, as jumping is dependant on the rendering speed it tends to be extremely fast on powerful computers and slow otherwise. This was necessary to guarantee jumping height so that one could jump up one block.
 
-HTML5/canvas does not allow mouse manipulation, so the game cannot feel like a real first person game, the camera angle is changed with the arrow keys.
+Chrome has some trouble rendering in plain color, specifically it's the `context.fill()` function that doesn't work when called too much it seems.
 
-The computer will get extremely hot while running this program.
+Firefox doesn't let the browser lock the pointer unless it's in full screen mode, this program should never run in full screen, unless on a super computer.

@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>Cube Engine v0.1</title>
 <meta name="description" content="Cube Engine: an HTML5 3D engine">
+<meta charset="utf-8">
 
 <link rel="shortcut icon" href="media/logo.png">
 <link type="text/css" rel="stylesheet" href="style/style.css">
@@ -32,6 +34,7 @@
 		<li><u>C</u>ollision detection: <input type="checkbox" checked="yes" onclick="player.collision = this.checked;" accesskey="c"></li>
 		<li><u>P</u>erformace graph: <input type="checkbox" onchange="renderer.graph = this.checked;" accesskey="p"></li>
 		<li><u>M</u>ap: <input type="checkbox" onchange="renderer.map = this.checked;" accesskey="m"></li>
+		<li><input type="button" value="Lock pointer" onclick="renderer.lockPointer();"></li>
 		<li>Focal length:<br>
 			<input type="range" min="100" max="1000" value="500" onchange="renderer.focalLength = this.value">
 		</li>

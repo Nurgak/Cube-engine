@@ -39,10 +39,12 @@ function Renderer(canvas, world, player)
 	this.nodeCount = 0;
 	this.faceCount = 0;
 	this.vertexCount = 0;
-	this.renderMode = 0;
+	// default starting render mode (0: plain color, 1: textured)
+	this.renderMode = 1;
 	this.graph = false;
 	this.map = false;
 	this.hud = true;
+	this.mouselock = false;
 	this.fps = 0;
 	this.frames = 0;
 	this.time = new Date().getTime();
@@ -57,6 +59,9 @@ function Renderer(canvas, world, player)
 	this.texture = new Image();
 	this.texture.src = "media/texture.png";
 	
+	this.crosshair = new Image();
+	this.crosshair.src = "media/crosshair.png";
+	
 	// mouse click interface
 	this.mouseClick = false;
 	this.clickedNode = false;
@@ -66,11 +71,23 @@ function Renderer(canvas, world, player)
 	var renderer = this;
 	this.canvas.onmousedown = function(event)
 	{
-		renderer.mouseClick = {
-			x: event.pageX-renderer.w2,
-			y: event.pageY-renderer.h2,
-			button: event.button
-		};
+		if(renderer.mouselock)
+		{
+			// when mouse is locked the click is always at the origin
+			renderer.mouseClick = {
+				x: 0,
+				y: 0,
+				button: event.button
+			};
+		}
+		else
+		{
+			renderer.mouseClick = {
+				x: event.pageX-renderer.w2,
+				y: event.pageY-renderer.h2,
+				button: event.button
+			};
+		}
 	}
 	
 	// update canvas size
@@ -95,6 +112,9 @@ function Renderer(canvas, world, player)
 	}
 	this.canvas.focus();
 	
+	// needed for mouse lock
+	document.renderer = this;
+	
 	this.render();
 }
 
@@ -110,6 +130,67 @@ window.requestFrame = (function()
 			window.setTimeout(callback, 10);
 		}
 })();
+
+Renderer.prototype.lockPointer = function()
+{
+	// detect feature
+	if(
+		!('pointerLockElement' in document) &&
+		!('mozPointerLockElement' in document) &&
+		!('webkitPointerLockElement' in document)
+	)
+	{
+		alert("Pointer lock unavailable in this browser.");
+		return;
+	}
+	
+	// firefox can only lock pointer when in full screen mode, this "program" should never run in full screen
+	if('mozPointerLockElement' in document)
+	{
+		alert("Firefox needs full screen to lock mouse. Use Chrome for the time being.");
+		return;
+	}
+	
+	// when mouse us locked/unlocked callback
+	document.addEventListener('pointerlockchange', this.mouseLockChangeCallback, false);
+	document.addEventListener('mozpointerlockchange', this.mouseLockChangeCallback, false);
+	document.addEventListener('mozpointerchange', this.mouseLockChangeCallback, false);
+	document.addEventListener('webkitpointerlockchange', this.mouseLockChangeCallback, false);
+	
+	this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock || this.canvas.webkitRequestPointerLock;
+	// actually lock the mouse
+	this.canvas.requestPointerLock();
+}
+
+// called when mouse lock state changes
+Renderer.prototype.mouseLockChangeCallback = function()
+{
+	// called from document
+	if(
+		document.pointerLockElement === this.renderer.canvas ||
+		document.mozPointerLockElement === this.renderer.canvas ||
+		document.webkitPointerLockElement === this.renderer.canvas
+	)
+	{
+		document.addEventListener('mousemove', this.renderer.mouseMoveCallback, false);
+		this.renderer.mouselock = true;
+	}
+	else
+	{
+		document.removeEventListener('mousemove', this.renderer.mouseMoveCallback, false);
+		this.renderer.mouselock = false;
+	}
+}
+
+// mouse move event callback
+Renderer.prototype.mouseMoveCallback = function(event)
+{
+	var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+	var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+	// this is document here
+	this.renderer.player.rotation.x -= movementY/100;
+	this.renderer.player.rotation.y -= movementX/100;
+}
 
 Renderer.prototype.changeRenderDist = function(value)
 {
@@ -332,6 +413,12 @@ Renderer.prototype.render = function()
 		this.clickedNode = false;
 		this.clickedFace = false;
 		this.mouseClick = false;
+	}
+	
+	if(this.mouselock)
+	{
+		// render crosshair
+		this.context.drawImage(this.crosshair, this.w2-8, this.h2-8);
 	}
 	
 	if(this.hud)
@@ -870,6 +957,7 @@ Renderer.prototype.displayHeightMap = function()
 	
 	// clipping mask
 	this.context.beginPath();
+	// 6.28 = 2*pi
 	this.context.arc(0, 0, mapsize, 0, 6.28, false);
 	this.context.closePath();
 	this.context.clip();
