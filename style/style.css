@@ -15,6 +15,13 @@ select
 	font-size: 12px;
 }
 
+a
+{
+    text-decoration: none;
+    border-bottom: dotted 1px #ffffff;
+    color: #ffffff;
+}
+
 h1
 {
 	margin: 0;
