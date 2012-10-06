@@ -4,6 +4,9 @@
 
 Cube Engine is an HTML5 3D engine based on canvas, absolutely no OpenGL and thus no 3D acceleration. This is a proof of concept and learning project, but it can be fun to some extent... as long as you have a ludicrously powerful computer.
 
+## Demo
+Check out the [live demo](http://nurgak.github.com/Cube-engine).
+
 ## World
 The world resembles that of [Minecraft](http://www.minecraft.net/), a popular voxel-type 3D game based on boxes. You can add and remove everything and anything, different types of nodes are available. The borders are only limited by the size of an integer in Javascript, that means the world is generated dynamically as the player visits new areas. There is no vertical limit, but rendering distance is somewhat limited.
 
@@ -21,7 +24,7 @@ The rendering is a simple painter's algorithm, everything is drawn from back to 
 
 To make things go faster a lower rendering distance can be selected.
 
-Canvas doesn't support textures, so texture implementation must be made from ground up: an affine texture mapping system is used. Rendering with textures makes the game noticeably slower so a simple renderer, that uses plain colors, is selected by default.
+Canvas doesn't support textures, so texture implementation must be made from ground up: an affine texture mapping system is used. Rendering with textures makes the game noticeably slower so a simple renderer, that uses plain colors, is also available.
 
 Textures are stored in a _png_ file, the texture placement is exactly the same as Minecraft's, so one could use any current Minecraft texture pack with this game.
 
@@ -38,3 +41,6 @@ Having no 3D acceleration the rendering speed relies on the computer's speed, as
 Chrome has some trouble rendering in plain color, specifically it's the `context.fill()` function that doesn't work when called too much it seems.
 
 Firefox doesn't let the browser lock the pointer unless it's in full screen mode, this program should never run in full screen, unless on a super computer.
+
+## Licence
+Released under the [WTFPL](http://sam.zoy.org/wtfpl/COPYING).
