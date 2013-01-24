@@ -56,10 +56,10 @@ joystick
 
 #joystick 
 {
+	background-color:red;
 	position: fixed;
 	left: 100px;
 	bottom: 100px;
-	z-index:99999;
 }
 
 #controls
