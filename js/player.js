@@ -54,6 +54,17 @@ function Player(world)
 	{
 		player.onKeyEvent(event.keyCode, false);
 	}
+	this.joystick = new SQUARIFIC.framework.TouchControl(document.getElementById("joystick"), {pretendArrowKeys: true});
+	this.joystick.on("pretendKeydown", 
+		function (event) {
+			player.onKeyEvent(event.keyCode, true);
+		}
+	);
+	this.joystick.on("pretendKeyup",
+		function (event) {
+			player.onKeyEvent(event.keyCode, false);
+		}
+	);
 	
 	this.spawn();
 }
