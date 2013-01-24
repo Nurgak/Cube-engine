@@ -1,15 +1,14 @@
 SQUARIFIC = {framework: {}};
 SQUARIFIC.framework.TouchControl = function (elem, settings) {
-  /* Settings: 
-    {
-			clickStyle: cssStyleDeclaration, //Style during the touching of the joystick
+	/* Settings: 
+		{
 			pretendArrowKeys: boolean, //Should it simulate keypresses of the arrows
 		}
 	*/
 	"use strict";
 	var callbackList = [],
 		self = this,
-		originalStyle = elem.style,
+		originalStyle,
 		originalX = 0,
 		originalY = 0,
 		fakeKeyspressed = [],
@@ -32,9 +31,6 @@ SQUARIFIC.framework.TouchControl = function (elem, settings) {
 		throw "Joystick Control: No element provided! Provided:" + elem;
 	}
 	settings.pretendArrowKeys = true; //Remove once non-pretend is implemented
-	if (!elem.style.position) {
-		elem.style.position = "relative";
-	}
 	this.on = function (name, callback) {
 		callbackList.sort(function (a, b) {return a.id - b.id;}); //To get a unique id we need the highest id last
 		if (callbackList.length < 1) {
@@ -83,18 +79,10 @@ SQUARIFIC.framework.TouchControl = function (elem, settings) {
 	};
 	this.handleTouchStart = function (event) {
 		if (event.changedTouches[0].target == elem) {
-			originalStyle = elem.style;
-			if (!originalStyle.top) {
-				originalStyle.top = "";
-			}
-			if (!originalStyle.left) {
-				originalStyle.left = "";
-			}
-			if (settings.clickStyle) {
-				elem.style = settings.clickStyle;
-			}
+			originalStyle = {position: elem.style.position, top: elem.style.top, left: elem.style.left};
 			originalX = event.changedTouches[0].clientX;
 			originalY = event.changedTouches[0].clientY;
+			elem.style.position = "fixed";
 			elem.style.left = event.changedTouches[0].clientX - event.changedTouches[0].target.style.width.slice(0, -2) / 2 + "px";
 			elem.style.top = event.changedTouches[0].clientY - event.changedTouches[0].target.style.height.slice(0, -2) / 2 + "px";
 			event.preventDefault();
@@ -102,7 +90,9 @@ SQUARIFIC.framework.TouchControl = function (elem, settings) {
 	};
 	this.handleTouchStop = function (event) {
 		if (event.changedTouches[0].target == elem) {
-			elem.style = originalStyle;
+			elem.style.position = originalStyle.position;
+			elem.style.top = originalStyle.top;
+			elem.style.left = originalStyle.left;
 			self.removeNonFakedKeys();
 			event.preventDefault();
 		}
