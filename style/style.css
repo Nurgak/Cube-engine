@@ -48,7 +48,7 @@ canvas
 
 joystick
 {
- 	display:block;
+ 	display:none;
  	height: 50px;
  	width: 50px;
  	border-radius: 50%;
