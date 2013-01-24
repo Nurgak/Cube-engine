@@ -36,8 +36,6 @@ Corner clipping isn't supported, so being too close to a node will lead to its r
 
 The way Javascript handles floating point numbers makes it difficult to have exact integers, something that the collision system relies on. This was solved by "rounding" the numbers when close to an integer, but it's not a very elegant solution.
 
-Having no 3D acceleration the rendering speed relies on the computer's speed, as jumping is dependant on the rendering speed it tends to be extremely fast on powerful computers and slow otherwise. This was necessary to guarantee jumping height so that one could jump up one block.
-
 Chrome has some trouble rendering in plain color, specifically it's the `context.fill()` function that doesn't work when called too much it seems.
 
 Firefox doesn't let the browser lock the pointer unless it's in full screen mode, this program should never run in full screen, unless on a super computer.

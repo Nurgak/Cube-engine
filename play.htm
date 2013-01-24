@@ -13,6 +13,16 @@
 <script type="text/javascript" src="js/node.js"></script>
 <script type="text/javascript" src="js/world.js"></script>
 <script type="text/javascript" src="js/render.js"></script>
+<script type="text/javascript" src="js/TouchControl.js"></script>
+<script type="text/javascript">
+	toggleJoystick = function (elem) {
+		if (elem.style.display === "none") {
+			elem.style.display = "block";
+		} else {
+			elem.style.display = "none;
+		}
+	}
+</script>
 
 </head>
 <body>
@@ -38,6 +48,7 @@
 		<li><u>P</u>erformace graph: <input type="checkbox" onchange="renderer.graph = this.checked;" accesskey="p"></li>
 		<li><u>M</u>ap: <input type="checkbox" onchange="renderer.map = this.checked;" accesskey="m"></li>
 		<li><input type="button" value="Lock pointer" onclick="renderer.lockPointer();"></li>
+		<li><input type="button" value="Joystick" onclick="toggleJoystick(document.getElementById('joystick'))"></li>
 		<li>Focal length:<br>
 			<input type="range" min="100" max="1000" value="500" onchange="renderer.focalLength = this.value">
 		</li>
@@ -46,8 +57,8 @@
 		</li>
 		<li><u>R</u>ender mode:<br>
 			<select onchange="renderer.renderMode = this.value;" accesskey="r">
-				<option value="0" selected>Plain color</option>
-				<option value="1">Textured</option>
+				<option value="0">Plain color</option>
+				<option value="1" selected>Textured</option>
 			</select>
 		</li>
 		<li><u>T</u>ype:<br>
@@ -129,7 +140,7 @@
 </div>
 
 <canvas id="canvas" tabindex="1"></canvas>
-
+<joystick id="joystick"></joystick>
 <script type="text/javascript">
 
 var canvas = document.getElementById("canvas");

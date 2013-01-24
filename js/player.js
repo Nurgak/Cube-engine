@@ -32,10 +32,13 @@ function Player(world)
 	this.size = 0.3;
 	this.speed = 5;
 	this.rSpeed = 2.5;
-	this.fallSpeed = 0.1;
-	this.jumpSpeed = 0.6;
+	this.velocity = 0;
+	this.fallSpeed = 8;
+	this.jumpSpeed = 8;
+	this.acceleration = 21;
 	this.gravity = true;
 	this.collision = true;
+	this.firstUpdate = true;
 	this.lastUpdate = new Date().getTime();
 	this.rotationMatrix = [];
 	this.keys = {};
@@ -51,6 +54,17 @@ function Player(world)
 	{
 		player.onKeyEvent(event.keyCode, false);
 	}
+	this.joystick = new SQUARIFIC.framework.TouchControl(document.getElementById("joystick"), {pretendArrowKeys: true});
+	this.joystick.on("pretendKeydown", 
+		function (event) {
+			player.onKeyEvent(event.keyCode, true);
+		}
+	);
+	this.joystick.on("pretendKeyup"
+		function (event) {
+			player.onKeyEvent(event.keyCode, false);
+		}
+	);
 	
 	this.spawn();
 }
@@ -130,6 +144,7 @@ Player.prototype.update = function()
 	if(!this.gravity)
 	{
 		this.delta.y = 0;
+		this.velocity = 0;
 	}
 	
 	// get player movement deltas with key input
@@ -156,7 +171,7 @@ Player.prototype.update = function()
 	// [space]
 	if(this.keys[32] && this.gravity && !this.delta.y)
 	{
-		this.delta.y += this.jumpSpeed;
+		this.velocity = this.jumpSpeed;
 	}
 	// [pg up]
 	if(this.keys[33] && !this.gravity)
@@ -170,20 +185,27 @@ Player.prototype.update = function()
 	}
 	
 	// gravity and terminal velocity
-	if(this.gravity && this.delta.y > -2)
+	if(this.gravity && this.velocity > -this.fallSpeed)
 	{
-		this.delta.y -= this.fallSpeed;
+		this.velocity -= this.acceleration * this.elapsed;
 	}
-	else if(this.gravity)
+	if(this.gravity && this.velocity < -this.fallSpeed)
 	{
-		this.delta.y = -2;
+		this.velocity = -this.acceleration;
 	}
-	
+
+	this.delta.y = this.velocity * this.elapsed;
+
+	if (this.firstUpdate) {
+		// collision detection doesn't seem to work on the first update
+		this.delta.y = 0;
+		this.firstUpdate = false;
+	}
 	if(this.collision)
 	{
 		this.collisionDetection();
 	}
-	
+
 	// apply movement
 	this.position.x += this.delta.x;
 	this.position.y += this.delta.y;
@@ -287,6 +309,7 @@ Player.prototype.collisionDetection = function()
 			if(this.position.y+this.height+0.2+this.delta.y >= node.y && this.position.y < node.y)
 			{
 				this.delta.y = -0.01;
+				this.velocity = 0;
 				this.position.y = node.y-this.height-0.2;
 			}
 			
@@ -294,6 +317,7 @@ Player.prototype.collisionDetection = function()
 			if(this.position.y+this.delta.y <= node.y+1)
 			{
 				this.delta.y = 0;
+				this.velocity = 0;
 				this.position.y = node.y+1;
 			}
 		}
