@@ -60,7 +60,7 @@ function Player(world)
 			player.onKeyEvent(event.keyCode, true);
 		}
 	);
-	this.joystick.on("pretendKeyup"
+	this.joystick.on("pretendKeyup",
 		function (event) {
 			player.onKeyEvent(event.keyCode, false);
 		}
