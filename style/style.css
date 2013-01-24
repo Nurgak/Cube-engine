@@ -45,6 +45,13 @@ canvas
 	background-color: #7BACFF;
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7BACFF), to(#ffffff));
 }
+joystick
+{
+ 	display:block;
+ 	height:50;
+ 	width:50;
+ 	border-radius:50%;
+}
 
 #controls
 {
