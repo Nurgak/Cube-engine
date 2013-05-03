@@ -1,6 +1,6 @@
 # Cube Engine
 
-![Cube Engine](http://i.imgur.com/m9jjG.png)
+![Cube Engine](https://raw.github.com/Nurgak/Cube-engine/master/screenshot.png)
 
 Cube Engine is an HTML5 3D engine based on canvas, absolutely no OpenGL and thus no 3D acceleration. This is a proof of concept and learning project, but it can be fun to some extent... as long as you have a ludicrously powerful computer.
 
@@ -17,8 +17,6 @@ Contrary to Minecraft the world renderer uses a 2D perlin-noise generator rather
 A height map and a frames per second graph can be enabled in the menu.
 
 ## Rendering
-
-![Cube Engine rendering with textures](http://i.imgur.com/Iz9IA.png)
 
 The rendering is a simple painter's algorithm, everything is drawn from back to front, so nodes close to the camera are drawn over the nodes further away. As canvas doesn't have any 3D rendering capabilities the engine uses very basic 3D rendering techniques. Some optimisation techniques like back-face culling, occlusion culling and frustum culling have been implemented. Octrees aren't adapted to this game and scale, chunks are better suited.
 
