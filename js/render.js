@@ -58,6 +58,10 @@ function Renderer(canvas, world, player)
 	// define texture (takes a couple of milliseconds to load)
 	this.texture = new Image();
 	this.texture.src = "media/texture.png";
+	this.textureSize;
+    	this.texture.onload = function(){
+        	renderer.textureSize = this.width/16;
+    	}
 	
 	this.crosshair = new Image();
 	this.crosshair.src = "media/crosshair.png";
@@ -720,11 +724,12 @@ Renderer.prototype.drawTextured = function(p)
 	// |   |
 	// 1---2
 	
+	var size = this.textureSize;
 	var pts = [
-		{x: this.rp[p[0]].x, y: this.rp[p[0]].y, u: 16*texture[0], v: 16*texture[1]},
-		{x: this.rp[p[1]].x, y: this.rp[p[1]].y, u: 16*texture[0], v: 16*texture[1]+16},
-		{x: this.rp[p[2]].x, y: this.rp[p[2]].y, u: 16*texture[0]+16, v: 16*texture[1]+16},
-		{x: this.rp[p[3]].x, y: this.rp[p[3]].y, u: 16*texture[0]+16, v: 16*texture[1]}
+		{x: this.rp[p[0]].x, y: this.rp[p[0]].y, u: size*texture[0], v: size*texture[1]},
+		{x: this.rp[p[1]].x, y: this.rp[p[1]].y, u: size*texture[0], v: size*texture[1]+size},
+		{x: this.rp[p[2]].x, y: this.rp[p[2]].y, u: size*texture[0]+size, v: size*texture[1]+size},
+		{x: this.rp[p[3]].x, y: this.rp[p[3]].y, u: size*texture[0]+size, v: size*texture[1]}
 	];
 	
 	// triangle subdivision

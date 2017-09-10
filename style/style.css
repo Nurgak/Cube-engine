@@ -42,8 +42,10 @@ h2
 
 canvas
 {
+	float: left;
 	background-color: #7BACFF;
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7BACFF), to(#ffffff));
+	background: linear-gradient(#7BACFF, #ffffff);
 }
 
 joystick
