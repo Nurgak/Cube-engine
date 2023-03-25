@@ -8,9 +8,28 @@
 */
 
 // render chunks inside the world
+function hideBar() {
+    
+    var x = document.getElementById("controls")
+    x.style.opacity = 0;
+    this.canvas.width  = window.innerWidth;
+	this.canvas.height = window.innerHeight;
+    
+}
+
+function showBar() {
+    
+    var x = document.getElementById("controls")
+    x.style.opacity = 100;
+    this.canvas.width  = window.innerWidth - 200;
+	this.canvas.height = window.innerHeight;
+    
+}
+
 function Renderer(canvas, world, player)
 {
 	// local references
+  this.keys = {};
 	this.canvas = canvas;
 	this.world = world;
 	this.player = player;
@@ -20,7 +39,7 @@ function Renderer(canvas, world, player)
 	this.vertex = {};
 	
 	// define canvas size according to window size
-	this.canvas.width  = window.innerWidth-200;
+	this.canvas.width  = window.innerWidth;
 	this.canvas.height = window.innerHeight;
 	
 	// half canvas size for math later on
@@ -43,7 +62,7 @@ function Renderer(canvas, world, player)
 	this.renderMode = 1;
 	this.graph = false;
 	this.map = false;
-	this.hud = true;
+	this.hud = false;
 	this.mouselock = false;
 	this.fps = 0;
 	this.frames = 0;
@@ -70,6 +89,7 @@ function Renderer(canvas, world, player)
 	this.mouseClick = false;
 	this.clickedNode = false;
 	this.clickedFace = false;
+
 	
 	// make parent reference
 	var renderer = this;
@@ -387,7 +407,7 @@ Renderer.prototype.render = function()
 	if(this.mouseClick)
 	{
 		// left click = add new node
-		if(this.clickedNode && this.mouseClick.button == 0)
+		if(this.clickedNode && this.mouseClick.button == 2)
 		{
 			var selectedType = document.getElementById("type").value;
 			
@@ -410,13 +430,14 @@ Renderer.prototype.render = function()
 			}
 		}
 		// right click = remove node
-		else if(this.clickedNode && this.mouseClick.button == 2)
+		else if(this.clickedNode && this.mouseClick.button == 0)
 		{
 			this.world.removeNode(this.clickedNode);
 		}
 		this.clickedNode = false;
 		this.clickedFace = false;
 		this.mouseClick = false;
+
 	}
 	
 	if(this.mouselock)
