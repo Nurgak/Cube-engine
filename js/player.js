@@ -168,6 +168,10 @@ Player.prototype.update = function()
 		this.delta.x -= dz;
 		this.delta.z -= dx;
 	}
+	if(this.keys['l'])
+	{
+		lockPointerKey();
+	}
 	// [space]
 	if(this.keys[32] && this.gravity && !this.delta.y)
 	{
