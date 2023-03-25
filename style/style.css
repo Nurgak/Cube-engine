@@ -6,6 +6,7 @@ body
 	margin: 0px;
 	font-family: sans-serif;
 	font-size: 12px;
+	overflow: hidden;
 }
 
 input,
@@ -40,13 +41,7 @@ h2
 	padding-left: 3px;
 }
 
-canvas
-{
-	float: left;
-	background-color: #7BACFF;
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7BACFF), to(#ffffff));
-	background: linear-gradient(#7BACFF, #ffffff);
-}
+
 
 joystick
 {
@@ -72,7 +67,7 @@ joystick
 	bottom: 0;
 	background: #222;
 	width: 200px;
-	color: #fff;
+	color: #ffffff ;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
