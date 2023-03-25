@@ -168,6 +168,19 @@ Player.prototype.update = function()
 		this.delta.x -= dz;
 		this.delta.z -= dx;
 	}
+	if(this.keys['l'])
+	{
+		lockPointerKey();
+	}
+	if(this.keys['e'])
+	{
+		this.speed = 9;
+	} else { this.speed = 5; }
+	// [shift]
+	if(this.keys[16])
+	{
+		this.height = 1.3
+	} else { this.height = 1.7 }
 	// [space]
 	if(this.keys[32] && this.gravity && !this.delta.y)
 	{
