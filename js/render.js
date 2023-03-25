@@ -995,3 +995,9 @@ Renderer.prototype.displayHeightMap = function()
 	
 	this.context.drawImage(this.map.position, this.canvas.width-mapsize-8, this.canvas.height-mapsize-8);
 }
+
+function refChange() {
+
+	renderer.lockPointer()
+
+}
